@@ -5,7 +5,6 @@ CookieSH is a Kotlin + Jetpack Compose developer toolkit for rooted Android devi
 ## Requirements
 
 - Rooted Android device
-- PHH su or Magisk
 - Android 8.0+ (API 26)
 
 ## Features
