@@ -1,92 +1,417 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>CookieSH</title>
-    <style>
-        body {
-            background: #0b0b0d;
-            color: #e0e0e0;
-            font-family: "JetBrains Mono", monospace;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background: linear-gradient(90deg, #5a00ff, #009dff);
-            padding: 30px;
-            text-align: center;
-            color: white;
-            font-size: 32px;
-            font-weight: bold;
-        }
-        .subtitle {
-            font-size: 16px;
-            opacity: 0.8;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        .card {
-            background: #141418;
-            border: 1px solid #1f1f25;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .card h2 {
-            margin-top: 0;
-            color: #7ab8ff;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            opacity: 0.5;
-            font-size: 14px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CookieSH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080810;
+    --surface: #0e0e1a;
+    --surface2: #13131f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e8f0;
+    --muted: #6b6b85;
+    --accent: #6c63ff;
+    --accent2: #00d9ff;
+    --accent3: #ff6584;
+    --green: #39d98a;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .scanlines {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 1000;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(8,8,16,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-weight: 600; font-size: 18px;
+    color: var(--text); text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #fff;
+    font-family: var(--mono);
+  }
+
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 13px;
+    font-family: var(--mono); letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .btn-github {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 6px;
+    background: transparent; border: 1px solid var(--border2);
+    color: var(--text); font-family: var(--mono); font-size: 13px;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-github:hover { background: var(--surface2); border-color: var(--accent); }
+
+  hero {
+    display: block;
+    padding: 180px 48px 100px;
+    max-width: 1100px; margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 14px; border-radius: 100px;
+    border: 1px solid rgba(108,99,255,0.35);
+    background: rgba(108,99,255,0.1);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 28px;
+  }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); 
+    animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: var(--mono); font-size: clamp(42px, 6vw, 76px);
+    font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  h1 .word-cookie { color: var(--text); }
+  h1 .word-sh {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.35);
+  }
+  h1 .accent-line {
+    display: block;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 17px; line-height: 1.8; color: var(--muted);
+    max-width: 520px; margin-bottom: 44px; font-weight: 300;
+  }
+
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 28px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: #fff; font-family: var(--mono); font-size: 14px;
+    font-weight: 500; text-decoration: none; border: none; cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 28px; border-radius: 8px;
+    background: transparent; border: 1px solid var(--border2);
+    color: var(--text); font-family: var(--mono); font-size: 14px;
+    text-decoration: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--surface2); border-color: var(--border2); }
+
+  .terminal {
+    margin: 80px 48px 0; max-width: 1100px; margin-left: auto; margin-right: auto;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+
+  .term-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: var(--surface2); border-bottom: 1px solid var(--border);
+  }
+  .term-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .d1{background:#ff5f56} .d2{background:#ffbd2e} .d3{background:#27c93f}
+  .term-title {
+    flex: 1; text-align: center; font-family: var(--mono); font-size: 12px;
+    color: var(--muted);
+  }
+
+  .term-body { padding: 24px 28px; font-family: var(--mono); font-size: 13px; line-height: 1.9; }
+  .term-line { display: flex; gap: 12px; }
+  .prompt { color: var(--accent); }
+  .cmd { color: var(--text); }
+  .out { color: var(--muted); padding-left: 22px; }
+  .out.ok { color: var(--green); }
+  .out.hi { color: var(--accent2); }
+
+  .features {
+    padding: 100px 48px;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--mono); font-size: 32px; font-weight: 600;
+    margin-bottom: 60px; line-height: 1.3;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    padding: 32px 28px;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .feature-card:hover { background: var(--surface2); }
+
+  .feat-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 18px;
+  }
+
+  .feat-title {
+    font-family: var(--mono); font-size: 14px; font-weight: 500;
+    color: var(--text); margin-bottom: 10px;
+  }
+
+  .feat-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+  .stack {
+    padding: 0 48px 100px;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .chip {
+    padding: 6px 16px; border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+  }
+
+  .requirements {
+    padding: 0 48px 100px;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .req-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 28px; }
+  .req-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px;
+  }
+  .req-card .req-num {
+    font-family: var(--mono); font-size: 26px; font-weight: 600;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 6px;
+  }
+  .req-card .req-label { font-size: 13px; color: var(--muted); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-left { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .footer-left span { color: var(--accent); }
+  .footer-right { display: flex; gap: 24px; }
+  .footer-right a { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-right a:hover { color: var(--text); }
+
+  @media(max-width:640px){
+    nav { padding: 16px 20px; }
+    hero, .features, .stack, .requirements { padding-left: 20px; padding-right: 20px; }
+    .terminal { margin: 40px 20px 0; }
+    .req-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 20px; }
+    h1 { font-size: 36px; }
+  }
+</style>
 </head>
 <body>
+<div class="scanlines"></div>
 
-<header>
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-icon">C$</div>
     CookieSH
-    <div class="subtitle">Root-first toolkit for GSI tinkerers</div>
-</header>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#stack">Stack</a>
+    <a href="#requirements">Requirements</a>
+    <a href="https://github.com/DancinCookie71/CookieSH" class="btn-github">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
 
-<div class="container">
+<hero>
+  <div class="hero-tag">
+    <div class="dot"></div>
+    Open Source · Apache 2.0
+  </div>
+  <h1>
+    <span class="word-cookie">Cookie</span><span class="word-sh">SH</span>
+    <span class="accent-line">Root-first toolkit.</span>
+    <span class="accent-line">No compromises.</span>
+  </h1>
+  <p class="hero-desc">
+    A unified shell interface for rooted Android devices and GSI power users.
+    Props, logs, partitions, packages — all in one dark, touch-friendly app built with Kotlin and Jetpack Compose.
+  </p>
+  <div class="hero-actions">
+    <a href="https://github.com/DancinCookie71/CookieSH/releases" class="btn-primary">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      Download APK
+    </a>
+    <a href="https://github.com/DancinCookie71/CookieSH" class="btn-secondary">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      View Source
+    </a>
+  </div>
+</hero>
 
-    <div class="card">
-        <h2>What is CookieSH?</h2>
-        <p>
-            CookieSH is a toolkit designed for users who work with GSIs and need deeper access to Android’s internal systems.
-            It focuses on clarity, reliability, and giving advanced users the tools they need to inspect and manage their device.
-        </p>
-    </div>
-
-    <div class="card">
-        <h2>Features</h2>
-        <ul>
-            <li>Props inspection and editing</li>
-            <li>Logcat viewer with filtering</li>
-            <li>Partition information viewer</li>
-            <li>Shell command runner</li>
-            <li>Package management tools</li>
-            <li>Device information dashboard</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h2>Downloads</h2>
-        <p>Releases are available on the GitHub Releases page.</p>
-    </div>
-
+<div class="terminal">
+  <div class="term-bar">
+    <div class="term-dot d1"></div>
+    <div class="term-dot d2"></div>
+    <div class="term-dot d3"></div>
+    <div class="term-title">cookiesh — shell@device:~</div>
+  </div>
+  <div class="term-body">
+    <div class="term-line"><span class="prompt">$</span><span class="cmd"> cookiesh --version</span></div>
+    <div class="out hi">CookieSH v1.0  |  Kotlin + Compose  |  root: active</div>
+    <div class="out" style="margin-bottom:12px">device: Pixel 7 GSI  |  slot: _b  |  su: Magisk 27.0</div>
+    <div class="term-line"><span class="prompt">$</span><span class="cmd"> cookiesh props get ro.build.version.release</span></div>
+    <div class="out ok">14</div>
+    <div class="out" style="margin-bottom:12px">source: /system/build.prop  |  editable: yes</div>
+    <div class="term-line"><span class="prompt">$</span><span class="cmd"> cookiesh logcat --filter "CookieSH" --level D</span></div>
+    <div class="out hi">→ streaming logcat  |  buffered: 4096 lines  |  press SPACE to pause</div>
+    <div class="term-line" style="margin-top:6px"><span class="prompt" style="color:var(--muted)">_</span></div>
+  </div>
 </div>
 
-<div class="footer">
-    © CookieDevelopment
+<div class="features" id="features">
+  <div class="section-label">// features</div>
+  <div class="section-title">Everything you need.<br>Nothing you don't.</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon" style="background:rgba(108,99,255,0.15)">🔧</div>
+      <div class="feat-title">Props Editor</div>
+      <div class="feat-desc">Read, edit, add and delete system props via getprop. Search, favorites, export, and PHH superuser presets included.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:rgba(0,217,255,0.12)">⚡</div>
+      <div class="feat-title">Shell Runner</div>
+      <div class="feat-desc">Real-time output with root toggle, local command history, copy and clear controls. Execute anything, instantly.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:rgba(57,217,138,0.12)">📋</div>
+      <div class="feat-title">Logcat Viewer</div>
+      <div class="feat-desc">Live feed with search, tag/package/level filters, pause/resume, export, and buffer clear. Full control over your device logs.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:rgba(255,101,132,0.12)">📦</div>
+      <div class="feat-title">Package Manager</div>
+      <div class="feat-desc">System, user, and disabled app filters. Disable, enable, uninstall for user 0, force stop — no adb required.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:rgba(108,99,255,0.15)">💾</div>
+      <div class="feat-title">Partition Viewer</div>
+      <div class="feat-desc">Parse /dev/block/by-name with active slot highlighting, size lookup, and per-partition dump support.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:rgba(0,217,255,0.12)">📡</div>
+      <div class="feat-title">ADB & Network</div>
+      <div class="feat-desc">Toggle ADB over Wi-Fi, set port, view IP, and manage PHH superuser package — all from one screen.</div>
+    </div>
+  </div>
 </div>
+
+<div class="stack" id="stack">
+  <div class="section-label">// tech stack</div>
+  <div class="section-title">Built on modern Android.</div>
+  <div class="chips">
+    <div class="chip">Kotlin</div>
+    <div class="chip">Jetpack Compose</div>
+    <div class="chip">Material 3</div>
+    <div class="chip">Hilt</div>
+    <div class="chip">Room</div>
+    <div class="chip">Coroutines + Flow</div>
+    <div class="chip">Coil</div>
+    <div class="chip">Gradle KTS</div>
+  </div>
+</div>
+
+<div class="requirements" id="requirements">
+  <div class="section-label">// requirements</div>
+  <div class="section-title">What you need to run it.</div>
+  <div class="req-grid">
+    <div class="req-card">
+      <div class="req-num">API 26+</div>
+      <div class="req-label">Android 8.0 Oreo or higher</div>
+    </div>
+    <div class="req-card">
+      <div class="req-num">Root</div>
+      <div class="req-label">PHH su or Magisk required</div>
+    </div>
+    <div class="req-card">
+      <div class="req-num">GSI</div>
+      <div class="req-label">Designed for Generic System Images</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left">© CookieDevelopment · <span>Apache 2.0</span></div>
+  <div class="footer-right">
+    <a href="https://github.com/DancinCookie71/CookieSH">GitHub</a>
+    <a href="https://github.com/DancinCookie71/CookieSH/releases">Releases</a>
+    <a href="https://github.com/DancinCookie71/CookieSH/blob/main/README.md">Docs</a>
+  </div>
+</footer>
 
 </body>
 </html>
