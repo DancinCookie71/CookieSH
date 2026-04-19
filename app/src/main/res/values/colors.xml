@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cookiesh_primary">#7C4DFF</color>
+    <color name="cookiesh_secondary">#3D5AFE</color>
+    <color name="cookiesh_background">#0D0D1A</color>
+    <color name="cookiesh_surface">#12122A</color>
+    <color name="cookiesh_accent_green">#00E676</color>
+    <color name="cookiesh_accent_red">#FF1744</color>
+    <color name="cookiesh_text_primary">#FFFFFF</color>
+    <color name="cookiesh_text_secondary">#B0B0CC</color>
+    <color name="cookiesh_launcher_background">#100F24</color>
+</resources>

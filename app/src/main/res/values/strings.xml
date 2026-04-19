@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CookieSH</string>
+    <string name="shell_command">Shell command</string>
+    <string name="phh_package_name">PHH manager package</string>
+</resources>
